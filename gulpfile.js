@@ -136,21 +136,21 @@ gulp.task('clear', function () {
 var settings = {
 	outputStyle: 'styl', /* less || scss || sass || styl */
 	columns: 12, /* number of grid columns */
-	offset: "30px", /* gutter width px || % */
+	offset: "15px", /* gutter width px || % */
 	filename: "_smart-grid",
     mobileFirst: false,
 	container: {
 		maxWidth: '1920px', /* max-width оn very large screen */
-		fields: '30px' /* side fields */
+		fields: '15px' /* side fields */
 	},
 	breakPoints: {
 		lg: {
 			'width': '1350px', /* -> @media (max-width: 1100px) */
-			'fields': '30px' /* side fields */
+			'fields': '15px' /* side fields */
 		},
 		md: {
 			'width': '1175px',
-			'fields': '20px'
+			'fields': '15px'
 		},
 		sm: {
 			'width': '900px',
