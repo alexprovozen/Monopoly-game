@@ -57,7 +57,7 @@ col-offsets($type)
     {$type}-right $offset_one_side
 
 wrapper()
-    max-width 1500px
+    max-width 1920px
     margin 0 auto
     wrapper-full()
 
@@ -90,154 +90,154 @@ col-padding()
     col-offsets(padding)
 
 size($n)
-    $val = "calc(100% / %s * %s - %s)" % ($columns $n $offset)
-    width $val
+    $val = 100% / $columns * $n
+    width "calc(%s - %s)" % ($val $offset)
 
 size-lg($n)
-    $val = "calc(100% / %s * %s - %s)" % ($columns $n $offset_lg)
-    lg(width, $val)
+    $val = 100% / $columns * $n
+    lg(width, "calc(%s - %s)" % ($val $offset_lg))
 
 size-md($n)
-    $val = "calc(100% / %s * %s - %s)" % ($columns $n $offset_md)
-    md(width, $val)
+    $val = 100% / $columns * $n
+    md(width, "calc(%s - %s)" % ($val $offset_md))
 
 size-sm($n)
-    $val = "calc(100% / %s * %s - %s)" % ($columns $n $offset_sm)
-    sm(width, $val)
+    $val = 100% / $columns * $n
+    sm(width, "calc(%s - %s)" % ($val $offset_sm))
 
 size-xs($n)
-    $val = "calc(100% / %s * %s - %s)" % ($columns $n $offset_xs)
-    xs(width, $val)
+    $val = 100% / $columns * $n
+    xs(width, "calc(%s - %s)" % ($val $offset_xs))
 
 shift($n)
-    $val = "calc(100% / %s * %s + %s)" % ($columns $n $offset_one_side)
-    margin-left $val
-    margin-right $val
+    $val = 100% / $columns * $n
+    margin-left "calc(%s + %s)" % ($val $offset_one_side)
+    margin-right "calc(%s + %s)" % ($val $offset_one_side)
 
 shift-left($n)
-    $val = "calc(100% / %s * %s + %s)" % ($columns $n $offset_one_side)
-    margin-left $val
+    $val = 100% / $columns * $n
+    margin-left "calc(%s + %s)" % ($val $offset_one_side)
 
 shift-right($n)
-    $val = "calc(100% / %s * %s + %s)" % ($columns $n $offset_one_side)
-    margin-right $val
+    $val = 100% / $columns * $n
+    margin-right "calc(%s + %s)" % ($val $offset_one_side)
 
 shift-padding($n)
-    $val = "calc(100% / %s * %s + %s)" % ($columns $n $offset_one_side)
-    padding-left $val
-    padding-right $val
+    $val = 100% / $columns * $n
+    padding-left "calc(%s + %s)" % ($val $offset_one_side)
+    padding-right "calc(%s + %s)" % ($val $offset_one_side)
 
 shift-padding-left($n)
-    $val = "calc(100% / %s * %s + %s)" % ($columns $n $offset_one_side)
-    padding-left $val
+    $val = 100% / $columns * $n
+    padding-left "calc(%s + %s)" % ($val $offset_one_side)
 
 shift-padding-right($n)
-    $val = "calc(100% / %s * %s + %s)" % ($columns $n $offset_one_side)
-    padding-right $val
+    $val = 100% / $columns * $n
+    padding-right "calc(%s + %s)" % ($val $offset_one_side)
 
 shift-lg($n)
-    $val = "calc(100% / %s * %s + %s)" % ($columns $n $offset_lg_one_side)
-    lg(margin-left, $val)
-    lg(margin-right, $val)
+    $val = 100% / $columns * $n
+    lg(margin-left, "calc(%s + %s)" % ($val $offset_lg_one_side))
+    lg(margin-right, "calc(%s + %s)" % ($val $offset_lg_one_side))
 
 shift-lg-left($n)
-    $val = "calc(100% / %s * %s + %s)" % ($columns $n $offset_lg_one_side)
-    lg(margin-left, $val)
+    $val = 100% / $columns * $n
+    lg(margin-left, "calc(%s + %s)" % ($val $offset_lg_one_side))
 
 shift-lg-right($n)
-    $val = "calc(100% / %s * %s + %s)" % ($columns $n $offset_lg_one_side)
-    lg(margin-right, $val)
+    $val = 100% / $columns * $n
+    lg(margin-right, "calc(%s + %s)" % ($val $offset_lg_one_side))
 
 shift-lg-padding($n)
-    $val = "calc(100% / %s * %s + %s)" % ($columns $n $offset_lg_one_side)
-    lg(padding-left, $val)
-    lg(padding-right, $val)
+    $val = 100% / $columns * $n
+    lg(padding-left, "calc(%s + %s)" % ($val $offset_lg_one_side))
+    lg(padding-right, "calc(%s + %s)" % ($val $offset_lg_one_side))
 
 shift-lg-padding-left($n)
-    $val = "calc(100% / %s * %s + %s)" % ($columns $n $offset_lg_one_side)
-    lg(padding-left, $val)
+    $val = 100% / $columns * $n
+    lg(padding-left, "calc(%s + %s)" % ($val $offset_lg_one_side))
 
 shift-lg-padding-right($n)
-    $val = "calc(100% / %s * %s + %s)" % ($columns $n $offset_lg_one_side)
-    lg(padding-right, $val)
+    $val = 100% / $columns * $n
+    lg(padding-right, "calc(%s + %s)" % ($val $offset_lg_one_side))
 
 shift-md($n)
-    $val = "calc(100% / %s * %s + %s)" % ($columns $n $offset_md_one_side)
-    md(margin-left, $val)
-    md(margin-right, $val)
+    $val = 100% / $columns * $n
+    md(margin-left, "calc(%s + %s)" % ($val $offset_md_one_side))
+    md(margin-right, "calc(%s + %s)" % ($val $offset_md_one_side))
 
 shift-md-left($n)
-    $val = "calc(100% / %s * %s + %s)" % ($columns $n $offset_md_one_side)
-    md(margin-left, $val)
+    $val = 100% / $columns * $n
+    md(margin-left, "calc(%s + %s)" % ($val $offset_md_one_side))
 
 shift-md-right($n)
-    $val = "calc(100% / %s * %s + %s)" % ($columns $n $offset_md_one_side)
-    md(margin-right, $val)
+    $val = 100% / $columns * $n
+    md(margin-right, "calc(%s + %s)" % ($val $offset_md_one_side))
 
 shift-md-padding($n)
-    $val = "calc(100% / %s * %s + %s)" % ($columns $n $offset_md_one_side)
-    md(padding-left, $val)
-    md(padding-right, $val)
+    $val = 100% / $columns * $n
+    md(padding-left, "calc(%s + %s)" % ($val $offset_md_one_side))
+    md(padding-right, "calc(%s + %s)" % ($val $offset_md_one_side))
 
 shift-md-padding-left($n)
-    $val = "calc(100% / %s * %s + %s)" % ($columns $n $offset_md_one_side)
-    md(padding-left, $val)
+    $val = 100% / $columns * $n
+    md(padding-left, "calc(%s + %s)" % ($val $offset_md_one_side))
 
 shift-md-padding-right($n)
-    $val = "calc(100% / %s * %s + %s)" % ($columns $n $offset_md_one_side)
-    md(padding-right, $val)
+    $val = 100% / $columns * $n
+    md(padding-right, "calc(%s + %s)" % ($val $offset_md_one_side))
 
 shift-sm($n)
-    $val = "calc(100% / %s * %s + %s)" % ($columns $n $offset_sm_one_side)
-    sm(margin-left, $val)
-    sm(margin-right, $val)
+    $val = 100% / $columns * $n
+    sm(margin-left, "calc(%s + %s)" % ($val $offset_sm_one_side))
+    sm(margin-right, "calc(%s + %s)" % ($val $offset_sm_one_side))
 
 shift-sm-left($n)
-    $val = "calc(100% / %s * %s + %s)" % ($columns $n $offset_sm_one_side)
-    sm(margin-left, $val)
+    $val = 100% / $columns * $n
+    sm(margin-left, "calc(%s + %s)" % ($val $offset_sm_one_side))
 
 shift-sm-right($n)
-    $val = "calc(100% / %s * %s + %s)" % ($columns $n $offset_sm_one_side)
-    sm(margin-right, $val)
+    $val = 100% / $columns * $n
+    sm(margin-right, "calc(%s + %s)" % ($val $offset_sm_one_side))
 
 shift-sm-padding($n)
-    $val = "calc(100% / %s * %s + %s)" % ($columns $n $offset_sm_one_side)
-    sm(padding-left, $val)
-    sm(padding-right, $val)
+    $val = 100% / $columns * $n
+    sm(padding-left, "calc(%s + %s)" % ($val $offset_sm_one_side))
+    sm(padding-right, "calc(%s + %s)" % ($val $offset_sm_one_side))
 
 shift-sm-padding-left($n)
-    $val = "calc(100% / %s * %s + %s)" % ($columns $n $offset_sm_one_side)
-    sm(padding-left, $val)
+    $val = 100% / $columns * $n
+    sm(padding-left, "calc(%s + %s)" % ($val $offset_sm_one_side))
 
 shift-sm-padding-right($n)
-    $val = "calc(100% / %s * %s + %s)" % ($columns $n $offset_sm_one_side)
-    sm(padding-right, $val)
+    $val = 100% / $columns * $n
+    sm(padding-right, "calc(%s + %s)" % ($val $offset_sm_one_side))
 
 shift-xs($n)
-    $val = "calc(100% / %s * %s + %s)" % ($columns $n $offset_xs_one_side)
-    xs(margin-left, $val)
-    xs(margin-right, $val)
+    $val = 100% / $columns * $n
+    xs(margin-left, "calc(%s + %s)" % ($val $offset_xs_one_side))
+    xs(margin-right, "calc(%s + %s)" % ($val $offset_xs_one_side))
 
 shift-xs-left($n)
-    $val = "calc(100% / %s * %s + %s)" % ($columns $n $offset_xs_one_side)
-    xs(margin-left, $val)
+    $val = 100% / $columns * $n
+    xs(margin-left, "calc(%s + %s)" % ($val $offset_xs_one_side))
 
 shift-xs-right($n)
-    $val = "calc(100% / %s * %s + %s)" % ($columns $n $offset_xs_one_side)
-    xs(margin-right, $val)
+    $val = 100% / $columns * $n
+    xs(margin-right, "calc(%s + %s)" % ($val $offset_xs_one_side))
 
 shift-xs-padding($n)
-    $val = "calc(100% / %s * %s + %s)" % ($columns $n $offset_xs_one_side)
-    xs(padding-left, $val)
-    xs(padding-right, $val)
+    $val = 100% / $columns * $n
+    xs(padding-left, "calc(%s + %s)" % ($val $offset_xs_one_side))
+    xs(padding-right, "calc(%s + %s)" % ($val $offset_xs_one_side))
 
 shift-xs-padding-left($n)
-    $val = "calc(100% / %s * %s + %s)" % ($columns $n $offset_xs_one_side)
-    xs(padding-left, $val)
+    $val = 100% / $columns * $n
+    xs(padding-left, "calc(%s + %s)" % ($val $offset_xs_one_side))
 
 shift-xs-padding-right($n)
-    $val = "calc(100% / %s * %s + %s)" % ($columns $n $offset_xs_one_side)
-    xs(padding-right, $val)
+    $val = 100% / $columns * $n
+    xs(padding-right, "calc(%s + %s)" % ($val $offset_xs_one_side))
 
 lg($name, $value)
     @media screen and (max-width: $break_lg)

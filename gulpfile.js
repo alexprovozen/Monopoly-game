@@ -140,7 +140,7 @@ var settings = {
 	filename: "_smart-grid",
     mobileFirst: false,
 	container: {
-		maxWidth: '1500px', /* max-width оn very large screen */
+		maxWidth: '1920px', /* max-width оn very large screen */
 		fields: '30px' /* side fields */
 	},
 	breakPoints: {
