@@ -2,118 +2,206 @@
 @import '_vars'
 @import '_fonts'
 
-body
-	font-size 16px
-	min-width 320px
-	opacity 1
-	overflow-x hidden
+.wrapper
+	display: flex
+	min-height: 100vh
+	margin: 0 auto
 
-header 
-	padding 15px
-	width calc(100vw - 30px)
-	height calc(100vh - 30px)
-	min-height 500px
-	background-color darken(yellow, 40%)
+	.game-place
+		height calc(100vh - 30px)
+		width calc(100vh * 1.54 - 30px)
+		border 1px solid black
+		box-sizing border-box
+		margin 15px 10px
+		flex-shrink 0
+		position relative
 
-.box 
-	width 100%
-	height 100%
-	display flex
-	flex-wrap wrap
-	align-items flex-start
-	margin 0 -7.5px
+		.top ul, .middle ul, .bottom ul
+			list-style none
+			display flex
+			flex-direction row
+			box-sizing border-box
 
-.game-box 
-	position relative
-	margin 0 7.5px
-	width calc(85% - 15px)
+		.top li, .middle li, .bottom li
+			border: 1px solid grey
+			box-sizing: border-box
 
-.game-height 
-	padding-top 52.5%
+		.top li, .bottom li
+			width: calc(70% / 11)
 
-.game-field, .players 
-	border-radius 5px
-	border 3px solid black
+			&.square
+				width: 15%
+				&>div
+					position: relative
+					width: 100%
+					padding-bottom: 100%
+					&>div
+						width: 100%
+						height: 100%
+						position: absolute
+						display: flex
+						justify-content: center
+						align-items: center
 
-.game-field
-	position absolute
-	top 0
-	left 0
-	right 0
-	bottom 0
+		.middle
+			height: 53%
+			
+			.container
+				display: flex
+				flex-direction: row
+				height: 100%
 
-.players 
-	margin 0 7.5px
-	width calc(15% - 15px)
-	display flex
-	flex-direction column
-	height 100%
-	.player 
-		flex-basis 20%
-		& + .player 
-			border-top 3px solid black
+				.left, .right
+					width: 15%
+					display: block
+					border: none
+					&>ul
+						display: flex
+						flex-direction: column
+						height: 100%
+						&>li.item
+							height: 19%
+						&>li.center
+							height: 24%
+							width: 100%
+					
+				.center
+					width: 70%
+					display: flex
+					flex-direction: row
+					
+					.monitor
+						width: 70%
+						border-right: 2px solid grey
+						display: flex
+						flex-direction: column
+						justify-content: center
+						align-items: center
 
-.top-row 
-	display flex
+						i 
+							margin: 10px
+							font-size: 12px
+						hr
+							margin: 10px 0
 
-.middle-row
-	border-top 3px solid black
-	border-bottom 3px solid black
-	display flex
-	.col
-		display flex
-	.col-left, .col-right 
-		display flex
-		flex-direction column
+						.names input
+							margin: 5px 0
 
-.bottom-row 
-	display flex
+							&.error
+								outline: 1px solid #c40f13
 
-.square
-	position relative
-	width 15%
-	max-width 150px
-	//flex-grow 1
-	&-content 
-		position absolute
-		top 0
-		left 0
-		right 0
-		bottom 0
-	&-height
-		padding-top 100%
+						.timeOut
+							font-size: 50px
+							display: none
 
-.cell 
-	border-left 1.5px solid black
-	border-right 1.5px solid black
-	flex-basis 6.36%
-	flex-grow 1
+					.chat
+						width: 30%
+						padding: 5px
+						overflow: auto
 
-.col-left, .col-right 
-	flex-basis 15%
-	max-width 150px
-	flex-grow 1
+						p.info
+							font-size: 12px
+							color: grey
 
-.top-border 
-	border-top 1.5px solid black
-.left-border 
-	border-left 1.5px solid black
-.right-border 
-	border-right 1.5px solid black
-.bottom-border 
-	border-bottom 1.5px solid black
+						p.trade
+							font-size: 12px
+							color: #009688
 
-.col
-	flex-basis 70%
-	flex-grow 4.6666
+						p.exit
+							font-size: 12px
+							color: red
 
-.interface 
-	width 70%
-.text 
-	width 30%
+		.checks
+			.check
+				height: 20px
+				width: 20px
+				border-radius: 50%
+				position: absolute
+				text-align: center
+				display: none
+				&.user1
+					background-color: #ff7575
+					top: 30px
+					left: 10px
+				&.user2
+					background-color: #7dff7d
+					top: 30px
+					left: 35px
+				&.user3
+					background-color: #6666ff
+					top: 30px
+					left: 60px
+				&.user4
+					background-color: #ffff80
+					top: 30px
+					left: 85px
+				&.user5
+					background-color: #82ffff
+					top: 30px
+					left: 110px
 
-.cell-horizontal
-	width 100%
-	flex-grow 1
-	& + .cell-horizontal 
-		border-top 3px solid black
+	.users
+		height: calc(100vh - 30px)
+		width: calc(100vh * 0.4 - 30px)
+		border: 1px solid black
+		box-sizing: border-box
+		margin: 15px 10px
+		flex-shrink: 0
+
+		ul
+			list-style: none
+			display: flex
+			flex-direction: column
+			height: 100%
+
+			li
+				border: 1px solid grey
+				height: 20%
+				box-sizing: border-box
+				display: flex
+				flex-direction: column
+				justify-content: center
+				align-items: center
+
+				&.user1
+					background-color: #ff7575
+				&.user2
+					background-color: #7dff7d
+				&.user3
+					background-color: #6666ff
+				&.user4
+					background-color: #ffff80
+				&.user5
+					background-color: #82ffff
+				&.no-active
+					background-color: #c0c0c0
+
+				p.name
+					font-weight: 700
+					font-size: 20px
+					margin-bottom: 10px
+
+
+li.item
+	display: flex
+	justify-content: center
+	align-items: center
+	font-size: 45px
+	color: grey
+	font-weight: 700
+	background-color: #d4d4d4
+
+li.item.square
+	font-size: 20px
+	font-weight: normal
+	background-color: white
+
+
+
+
+
+
+
+
+
+
