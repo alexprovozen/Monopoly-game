@@ -65,15 +65,18 @@ $(function() {
 	}
 
 	//Таймер
-	function timer(seconds) {
+	function timer(seconds, callback) {
 		var $blockTimer = $('.monitor .timeOut');
+		var f = callback || function() {};
 		$blockTimer.show();
 		var time = setInterval(function () {
 				seconds--;
 				$blockTimer.empty().html(seconds);
 				if (seconds === 0) {
-						clearInterval(time)
+                    clearInterval(time);
+                    f();
 				}
+
 		}, 1000)
 	}
 
@@ -121,8 +124,7 @@ $(function() {
 //ход игрока
 function playerProgress() {
 		for (var i = 0; i<settings.players.length; i++) {
-				sendChat('Ход игрока <b>' + settings.players[i].name + '</b>', 'info');
-				timer(10)
+		    timer(10, sendChat('Ход игрока <b>' + settings.players[i].name + '</b>', 'info'))
 		}
 }
 
