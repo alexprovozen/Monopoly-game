@@ -124,7 +124,9 @@ $(function() {
 //ход игрока
 function playerProgress() {
 		for (var i = 0; i<settings.players.length; i++) {
-		    timer(10, sendChat('Ход игрока <b>' + settings.players[i].name + '</b>', 'info'))
+		    timer(10, function() {
+					sendChat('Ход игрока <b>' + settings.players[i].name + '</b>', 'info');
+				});
 		}
 }
 
