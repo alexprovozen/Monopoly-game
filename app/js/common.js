@@ -7,7 +7,7 @@ $(function() {
 
 	// Выводит информацию в чат
 	function sendChat(message, type) {
-		$('.chat').append('<p class="' + type + '">'+ message + '</p>')
+		$('.chat').append('<p class="' + type + '">'+ message + '</p>');
 	}
 
 	//Обновляет информацию в окне users
@@ -64,19 +64,17 @@ $(function() {
 		}
 	}
 
+
 	//Таймер
-	function timer(seconds, callback) {
+	function timer(seconds) {
 		var $blockTimer = $('.monitor .timeOut');
-		var f = callback || function() {};
 		$blockTimer.show();
 		var time = setInterval(function () {
 				seconds--;
 				$blockTimer.empty().html(seconds);
 				if (seconds === 0) {
-                    clearInterval(time);
-                    f();
+					clearInterval(time);
 				}
-
 		}, 1000)
 	}
 
@@ -123,11 +121,18 @@ $(function() {
 
 //ход игрока
 function playerProgress() {
-		for (var i = 0; i<settings.players.length; i++) {
-		    timer(10, function() {
-					sendChat('Ход игрока <b>' + settings.players[i].name + '</b>', 'info');
-				});
-		}
+	var duration = 0;
+	for (var i = 0; i<settings.players.length; i++) {
+		var that = i;
+		(function(){
+			var thiss = that;
+			var timer2 = setTimeout(function() {
+				timer(10);
+				sendChat('Ход игрока <b>' + settings.players[thiss].name + '</b>', 'info');
+			}, duration);
+		})();
+		duration += 10000
+	}
 }
 
 

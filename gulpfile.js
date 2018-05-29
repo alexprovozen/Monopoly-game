@@ -37,7 +37,6 @@ gulp.task('browserSync', function() {
 gulp.task('js', ['common-js'], function() {
 	return gulp.src([ // Берем все необходимые библиотеки
 		'app/libs/jquery/jquery.min.js', // Берем jQuery
-        //'app/libs/animate/wow.min.js',
 		'app/js/common.min.js', // Всегда в конце
 		])
 		.pipe(concat('libs.min.js')) // Собираем их в кучу в новом файле libs.min.js
