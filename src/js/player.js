@@ -1,9 +1,10 @@
 import $ from 'jquery'
 class Player {
-	constructor(name ,money=1000000, counter=0) {
+	constructor(name, block, money=1000000, counter=0) {
 		this.name = name;
 		this.money = money;
 		this.counter = counter;
+		this.block = block;
 	}
 
 	getName() {
@@ -46,15 +47,12 @@ class Player {
 	}
 	
 	// Изменяет информацию и игроках в левом меню
-	setUsers(idUser, type, value) {
-		let id = idUser + 1;
-		let user = '.users .user' + id + ' p.' + type;
-		let newUser = '.users .user' + id;
+	setUsers(type, value) {
 		if (type==="money") {
 			value = '$' + value;
 		}
-		if ($(user).length) {
-			$(user).empty().html(value)
+		if (this.block.length) {
+			$(this.block).empty().html(value)
 		} else {
 			$(newUser).append('<p class="' + type + '">' + value + '</p>')
 			$(newUser).removeClass('no-active')

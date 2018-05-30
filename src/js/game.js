@@ -36,9 +36,10 @@ class Game {
 		let inputs = $('.names input')
 		if (!$('.names input.error').length) {
 			$('.start-message').fadeOut(200);
+			let block = document.querySelectorAll('.users li');
 			for(let i = 0; i<inputs.length; i++) {
 				let name = inputs[i].value;
-				players[i] = new Player(name);
+				players[i] = new Player(name, block[i]);
 				//Выводим информацию о игроках
 				players[i].setUsers(i, 'name', players[i].getName());
 				players[i].setUsers(i, 'money', players[i].getMoney());
