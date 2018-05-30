@@ -7,7 +7,7 @@ let company = new Company();
 
 let game = new Game(player, company);
 // Старт игры
-	game.init();
+game.init();
 
 
 

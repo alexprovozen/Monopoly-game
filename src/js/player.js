@@ -23,14 +23,14 @@ class Player {
 		this.counter = counter;
 	}
 
-	getCounter() {
+	playerRun() {
 		let random = this.getRandomNumber();
 		let sumPoints = random + this.counter;
 		if (sumPoints>35) {
 			this.counter = sumPoints - 36;
 			//Проход круга +200000$
-			let updateMoney = this.money += 200000;
-			this.setMoney(updateMoney);
+			this.setMoney(this.money += 200000);
+			this.setUsers('money', this.getMoney());
 		} else {
 			this.counter = sumPoints;
 		}
@@ -38,11 +38,11 @@ class Player {
 	}
 
 	getRandomNumber() {
-        var number1 = 1 - 0.5 + Math.random() * (6 - 1 + 1);
-        var number2 = 1 - 0.5 + Math.random() * (6 - 1 + 1);
+        let number1 = 1 - 0.5 + Math.random() * (6 - 1 + 1);
+        let number2 = 1 - 0.5 + Math.random() * (6 - 1 + 1);
         number1 = Math.round(number1);
         number2 = Math.round(number2);
-        var random = {number1: number1, number2: number2};
+        let random = {number1: number1, number2: number2};
         return random
 	}
 	
@@ -51,11 +51,13 @@ class Player {
 		if (type==="money") {
 			value = '$' + value;
 		}
-		if (this.block.length) {
-			$(this.block).empty().html(value)
+		let p = '<p class="' + type + '">' + value + '</p>';
+		let path = 'p.' + type;
+		if ($(this.block).children(path).length) {
+			$(this.block).children(path).empty().append(p)
 		} else {
-			$(newUser).append('<p class="' + type + '">' + value + '</p>')
-			$(newUser).removeClass('no-active')
+			$(this.block).append(p)
+			$(this.block).removeClass('no-active');
 		}
 	}
 
