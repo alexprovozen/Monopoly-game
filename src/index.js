@@ -1,3 +1,4 @@
+import $ from 'jquery'
 var qSelect;
 $(function() {
 
@@ -154,3 +155,5 @@ $('#quantity-players').on('change', function() {
 })
 
 });
+
+import './stylus/styles.styl';
