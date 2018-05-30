@@ -6,11 +6,11 @@ class Game {
 		this.player = player;
 		this.company = company;
 	}
-
+	// Выводит сообщение в чат
 	sendChat(message, type) {
 		$('.chat').append('<p class="' + type + '">'+ message + '</p>');
 	}
-
+	// Добавляет новый инпут для нового игрока
 	getPLayers(e) {
 		let qInput = $('.names input').length;
 		let qSelect = e.target.value;
@@ -23,7 +23,7 @@ class Game {
 				}
 		}
 	}
-
+	// Получает имена игроков и создает экземпляры класса
 	getPlayersNames() {
 		// Проверяем все ли поля заполнены
 		$('.names input').each(function() {
@@ -35,30 +35,22 @@ class Game {
 		});
 		let inputs = $('.names input')
 		if (!$('.names input.error').length) {
+			$('.start-message').fadeOut(200);
 			for(let i = 0; i<inputs.length; i++) {
 				let name = inputs[i].value;
 				players[i] = new Player(name);
-				setUsers(i, 'name', settings.players[i].name);
-				setUsers(i, 'money', settings.players[i].money);
+				//Выводим информацию о игроках
+				players[i].setUsers(i, 'name', players[i].getName());
+				players[i].setUsers(i, 'money', players[i].getMoney());
+				//Отображаем фишки игроков
+				let number = i+1;
+                let check = '.checks .user' + number;
+                $(check).show();
 			}
 		}
 	}
 
-	setUsers(idUser, type, value) {
-		var id = idUser + 1;
-		var user = '.users .user' + id + ' p.' + type;
-		var newUser = '.users .user' + id;
-		if (type==="money") {
-				value = '$' + value;
-		}
-		if ($(user).length) {
-				$(user).empty().html(value)
-		} else {
-				$(newUser).append('<p class="' + type + '">' + value + '</p>')
-				$(newUser).removeClass('no-active')
-		}
-	}
-
+	// Инициализация игры
 	init() {
 		$('#start-game').on('click', () => {
 			this.getPlayersNames();
@@ -66,6 +58,8 @@ class Game {
 		$('#quantity-players').on('change', (e) => {
 			this.getPLayers(e);
 		});
+
+		
 	}
 
 }
