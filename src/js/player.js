@@ -43,7 +43,7 @@ class Player {
         number1 = Math.round(number1);
         number2 = Math.round(number2);
         let random = {number1: number1, number2: number2};
-        return random
+        return random;
 	}
 	
 	// Изменяет информацию и игроках в левом меню
@@ -59,6 +59,15 @@ class Player {
 			$(this.block).append(p)
 			$(this.block).removeClass('no-active');
 		}
+	}
+
+	playerProgress() {
+		let that = this;
+		$('.playerProgress .run').show().on('click', () => {
+			console.log(that.playerRun())
+		});
+
+
 	}
 
 }

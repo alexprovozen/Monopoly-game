@@ -86,7 +86,7 @@ class Game {
 	}
 
 	timer(seconds) {
-		let $blockTimer = $('.monitor .timeOut');
+		let $blockTimer = $('.playerProgress .timeOut');
 		$blockTimer.show();
 		let time = setInterval(function () {
             seconds--;
@@ -99,9 +99,9 @@ class Game {
 
 	startGame(player) {
 		this.sendChat('Ход игрока <b>' + players[player].name + '</b>', 'info');
-		this.timer(20)
+		this.timer(20);
+		players[player].playerProgress();
 		let next = player + 1;
-		console.log(next)
 		setTimeout( () => {
 			if (next === players.length) {
 				next = 0;
