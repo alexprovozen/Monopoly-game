@@ -66,13 +66,16 @@
 									
 								</div>
 								<hr>
-								<input type="button" @click="startGame" value="Начать игру" id="start-game">
+								<input type="button" @click="initGame" value="Начать игру" id="start-game">
 							</div>
 							<div class="playerProgress">
 								<div class="timeOut" ref="timer">
 									20
 								</div>
-								<button class="run" @click="clearTimer">Бросить кубики</button>
+								<button class="run" 
+												@click="playerProgress"
+												ref="run"
+												>Бросить кубики</button>
 								<button class="buy">Купить</button>
 								<button class="next">Следующий</button>
 							</div>
@@ -133,16 +136,18 @@
 
 <script>
 //import AppPlayers from './assets/Players'
+let interval = 0
+let timeOut = 0
 export default {
   data () {
     return {
 			count: 2,
 			players: [],
-			interval: 0
+			player: 0
     }
 	},
 	methods: {
-		startGame() {
+		initGame() {
 			let error = false;
 			let inputs = document.querySelectorAll('.names input');
 			for (let input of inputs) {
@@ -166,7 +171,7 @@ export default {
 			this.sendChat('Игра началась', 'info');
 			this.sendChat('Определяем очередь игроков', 'info');
 			this.setOrder();
-			this.playerRun(0);
+			this.startGame(this.player);
 		},
 		sendChat(message, type) {
 			let p = document.createElement('p');
@@ -215,7 +220,7 @@ export default {
 		timer(seconds) {
 			let blockTimer = this.$refs.timer;
 			blockTimer.style.display = 'block';
-			this.interval = setInterval(function () {
+			interval = setInterval( () => {
 							seconds--;
 							blockTimer.innerHTML = seconds;
 							if (seconds === 0) {
@@ -224,19 +229,36 @@ export default {
 			}, 1000)
 		},
 		clearTimer() {
-			clearInterval(this.interval);
-			clearTimeout(this.timeOut);
+			clearInterval(interval);
+			clearTimeout(timeOut);
 		},
-		playerRun(player) {
+		startGame(player) {
 			this.sendChat('Ход игрока <b>' + this.players[player].name + '</b>', 'info');
 			this.timer(20);
 			let next = player + 1;
-			let timeOut = setTimeout( () => {
+			timeOut = setTimeout( () => {
 				if (next === this.players.length) {
 					next = 0;
 				}
-				this.playerRun(next)
-			},20000)
+				this.startGame(next)
+			},21000)
+		},
+		playerRun(player) {
+			let random = this.getRandomNumbers();
+			let sumPoints = random.number1 + random.number2 + this.counter;
+			if (sumPoints>35) {
+				this.players[player].counter = sumPoints - 36;
+				//Проход круга +200000$
+				this.players[player].money += 200000;
+			} else {
+				this.players[player].counter = sumPoints;
+			}
+		},
+		playerProgress() {
+			this.clearTimer();
+			this.$refs.run.style.display = 'none';
+			this.playerRun(this.player);
+			console.log(this.players[this.player].counter)
 		}
 	}
 }
