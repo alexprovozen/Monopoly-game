@@ -1,14 +1,14 @@
 <template>
   	<div class="wrapper">
-			<div class="game-place">
-				<div class="checks">
-					<div class="check user1">1</div>
-					<div class="check user2">2</div>
-					<div class="check user3">3</div>
-					<div class="check user4">4</div>
-					<div class="check user5">5</div>
-				</div>
-				<div class="top">
+		<div class="game-place">
+            <div class="checks">
+              <div :style="{display: 'block'}"
+									v-for="(n, index) of players" 
+									:key="index" 
+									:class="'check user' + (index+1)">{{index+1}}
+							</div>
+            </div>
+			<div class="top">
 				<ul>
 					<li class="item square">
 						<div>
@@ -69,10 +69,10 @@
 								<input type="button" @click="startGame" value="Начать игру" id="start-game">
 							</div>
 							<div class="playerProgress">
-								<div class="timeOut">
+								<div class="timeOut" ref="timer">
 									20
 								</div>
-								<button class="run" @random="setOrder">Бросить кубики</button>
+								<button class="run" @click="clearTimer">Бросить кубики</button>
 								<button class="buy">Купить</button>
 								<button class="next">Следующий</button>
 							</div>
@@ -132,14 +132,13 @@
 </template>
 
 <script>
-//import AppPlayer from './assets/Player'
-
+//import AppPlayers from './assets/Players'
 export default {
-	
   data () {
     return {
 			count: 2,
-			players: []
+			players: [],
+			interval: 0
     }
 	},
 	methods: {
@@ -166,7 +165,8 @@ export default {
 			}
 			this.sendChat('Игра началась', 'info');
 			this.sendChat('Определяем очередь игроков', 'info');
-			this.setOrder()
+			this.setOrder();
+			this.playerRun(0);
 		},
 		sendChat(message, type) {
 			let p = document.createElement('p');
@@ -190,8 +190,12 @@ export default {
 				if (i > 0) {
 					for(let k = 0; k<i; k++) {
 						if (this.players[i].randomSum === this.players[k].randomSum) {
-							let random = this.getRandomNumbers();
-							this.players[i].randomSum = random[0] + random[1];
+              let random = this.getRandomNumbers();
+              this.players[i].randomSum = random[0] + random[1];
+							while (this.players[i].randomSum === this.players[k].randomSum) {
+                random = this.getRandomNumbers();
+                this.players[i].randomSum = random[0] + random[1];
+							}
 							this.sendChat(`Игрок <b>${this.players[i].name}</b> перебрасывает ${random[0]} и ${random[1]}`, 'info');
 						}
 					}
@@ -207,6 +211,32 @@ export default {
 				let order = ['Первым', 'Вторым', 'Третьим', 'Четвертым', 'Пятым'];
 				this.sendChat(`${order[i]} ходит<b> ${this.players[i].name}</b>`, 'trade');
 			}
+		},
+		timer(seconds) {
+			let blockTimer = this.$refs.timer;
+			blockTimer.style.display = 'block';
+			this.interval = setInterval(function () {
+							seconds--;
+							blockTimer.innerHTML = seconds;
+							if (seconds === 0) {
+									clearInterval(interval);
+							}
+			}, 1000)
+		},
+		clearTimer() {
+			clearInterval(this.interval);
+			clearTimeout(this.timeOut);
+		},
+		playerRun(player) {
+			this.sendChat('Ход игрока <b>' + this.players[player].name + '</b>', 'info');
+			this.timer(20);
+			let next = player + 1;
+			let timeOut = setTimeout( () => {
+				if (next === this.players.length) {
+					next = 0;
+				}
+				this.playerRun(next)
+			},20000)
 		}
 	}
 }
