@@ -1,5 +1,40 @@
 <template>
-  	<div class="wrapper">
+  <v-app>
+		<div class="start-message" ref="start">
+			<div class="boxx">
+				<h1>Добро пожаловать в мир Монополии!</h1>
+				<v-alert :value="true" type="info">
+					Выберите количество играков и введите их имена.
+    		</v-alert>
+			<v-select
+				:value="count"
+				:dense="true"
+				:items="options"
+				label="Select"
+				@change="count = $event"
+				id="quantity-players"
+				single-line
+				max-height="200"
+			></v-select>
+			<br>
+			<div class="names">
+				<v-form ref="form" v-model="valid" validation>
+					<v-text-field
+						v-for="index of count" :key="index"
+						class="input"
+						:id="'player-' + index"
+						:label="'Игрок ' + index"
+						:rules="[v => !!v || 'Это поле обязательно']"
+					></v-text-field>
+					<v-layout mt-3>
+						<v-spacer></v-spacer>
+						<v-btn color="success" @click="initGame" id="start-game">Начать игру</v-btn>
+					</v-layout>
+				</v-form>
+			</div>
+			</div>
+		</div>
+		<div class="wrapper">
 		<div class="game-place">
             <div class="checks">
               <div :style="{display: 'block'}"
@@ -50,33 +85,18 @@
 					</li>
 					<li class="center">
 						<div class="monitor">
-							<div class="start-message">
-								<h3>Добро пожаловать в мир Монополии!</h3>
-								<i>Выберите количество играков и введите их имена.</i><hr>
-								<span>Количество играков:</span>
-								<select @change="count = +$event.target.value;" name="quantity-players" id="quantity-players">
-									<option :value="index + 2" v-for="(opt,index) of 4" :key="index">{{ index + 2 }}</option>
-								</select><br>
-								<div class="names">
-									<div v-for="(n, index) of count" :key="index">
-										<label :for="'player-' + (index+1)">Игрок {{ index + 1 }}</label>
-										<input type="text" :id="'player-' + (index+1)"><br>
-									</div>
-									
-									
-								</div>
-								<hr>
-								<input type="button" @click="initGame" value="Начать игру" id="start-game">
-							</div>
 							<div class="playerProgress">
 								<div class="timeOut" ref="timer">
 									20
 								</div>
-								<button class="run" 
+								<v-btn color="success" class="run" 
 												@click="playerProgress"
 												ref="run"
-												>Бросить кубики</button>
-								<button class="buy">Купить</button>
+												>Бросить кубики</v-btn>
+								<v-btn color="warning" 
+												class="buy"
+												ref="buy"
+												>Купить</v-btn>
 								<button class="next">Следующий</button>
 							</div>
 						</div>
@@ -132,6 +152,7 @@
 			</ul>
 		</div>
 	</div>
+	</v-app>
 </template>
 
 <script>
@@ -143,7 +164,9 @@ export default {
     return {
 			count: 2,
 			players: [],
-			player: 0
+			player: 0,
+			options: [2,3,4,5],
+			valid: false
     }
 	},
 	methods: {
@@ -157,21 +180,12 @@ export default {
 					counter: 0,
 				}
 				this.players.push(player);
-				if (!input.value) {
-					input.classList.add('error');
-					error = true;
-				} else {
-					input.classList.remove('error');
-				}
 			}
-			if(!error) {
-				document.querySelector('.start-message').style.display = 'none';
-				document.querySelector('.run').style.display = 'block';
-			}
-			this.sendChat('Игра началась', 'info');
-			this.sendChat('Определяем очередь игроков', 'info');
+			this.$refs.start.style.display = 'none';
+			this.sendChat('Игра началась', 'infos');
+			this.sendChat('Определяем очередь игроков', 'infos');
 			this.setOrder();
-			this.startGame(this.player);
+			this.startGame(this.player, true);
 		},
 
 		sendChat(message, type) {
@@ -193,7 +207,7 @@ export default {
 			for (let i=0; i<this.players.length;i++) {
 				let random = this.getRandomNumbers();
 				this.players[i].randomSum = random[0] + random[1];
-				this.sendChat(`Игрок <b>${this.players[i].name}</b> выбрасывает ${random[0]} и ${random[1]}`, 'info');
+				this.sendChat(`Игрок <b>${this.players[i].name}</b> выбрасывает ${random[0]} и ${random[1]}`, 'infos');
 				//проверяем наличие повторений
 				if (i > 0) {
 					for(let k = 0; k<i; k++) {
@@ -204,7 +218,7 @@ export default {
                 random = this.getRandomNumbers();
                 this.players[i].randomSum = random[0] + random[1];
 							}
-							this.sendChat(`Игрок <b>${this.players[i].name}</b> перебрасывает ${random[0]} и ${random[1]}`, 'info');
+							this.sendChat(`Игрок <b>${this.players[i].name}</b> перебрасывает ${random[0]} и ${random[1]}`, 'infos');
 						}
 					}
 				}
@@ -238,15 +252,33 @@ export default {
 			clearTimeout(timeOut);
 		},
 
-		startGame(player) {
-			this.sendChat('Ход игрока <b>' + this.players[player].name + '</b>', 'info');
+		startGame(player, newPlayer) {
+			if (newPlayer) {
+				this.$refs.run.$el.style.display = 'block';
+				this.sendChat('Ход игрока <b>' + this.players[player].name + '</b>', 'infos');
+				this.$refs.buy.$el.style.display = 'none';
+
+			} else {
+				this.$refs.buy.$el.style.display = 'block';
+				this.sendChat('Купить компанию <b>' + this.players[player].name + '</b>', 'infos');
+				this.player++
+				if (this.player === this.players.length) {
+					this.player = 0;
+				}
+			}
 			this.timer(20);
 			let next = player + 1;
+			
+			console.log(next)
 			timeOut = setTimeout( () => {
 				if (next === this.players.length) {
 					next = 0;
 				}
-				this.startGame(next)
+				this.startGame(next, true)
+				this.player++
+				if (this.player === this.players.length) {
+					this.player = 0;
+				}
 			},21000)
 		},
 
@@ -254,232 +286,423 @@ export default {
 		  let player = this.players[i]
 			let random = this.getRandomNumbers();
 			let sumPoints = random[0] + random[1] + player.counter;
-      this.sendChat(`Игрок <b>${player.name}</b> выбрасывает ${random[0]} и ${random[1]}`, 'info');
+      this.sendChat(`Игрок <b>${player.name}</b> выбрасывает ${random[0]} и ${random[1]}`, 'infos');
 			if (sumPoints>35) {
         player.counter = sumPoints - 36;
 				//Проход круга +200000$
         player.money += 200000;
-        this.sendChat(`Игрок <b>${player.name}</b> проходит круг и получает $200 000`, 'info');
+        this.sendChat(`Игрок <b>${player.name}</b> проходит круг и получает $200 000`, 'infos');
 			} else {
         player.counter = sumPoints;
 			}
-      this.sendChat(`Игрок <b>${player.name}</b> перемещается на клетку ${player.counter}`, 'info');
+			this.sendChat(`Игрок <b>${player.name}</b> перемещается на клетку ${player.counter}`, 'infos');
+			this.startGame(this.player, false);
 		},
 
 		playerProgress() {
 			this.clearTimer();
-			this.$refs.run.style.display = 'none';
+			this.$refs.run.$el.style.display = 'none';
 			this.playerRun(this.player);
-			
 		}
 	}
 }
 </script>
 
-<style lang="stylus">
-@import './assets/_libs.styl'
+<style scoped>
+@import './assets/base-css/reset.css';
 
-.wrapper
-	display: flex
-	min-height: 100vh
-	margin: 0 auto
+.wrapper {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  min-height: 100vh;
+  margin: 0 auto;
+}
 
-	.game-place
-		height calc(100vh - 30px)
-		width calc(100vh * 1.54 - 30px)
-		border 1px solid black
-		box-sizing border-box
-		margin 15px 10px
-		flex-shrink 0
-		position relative
+.wrapper .game-place {
+  height: -webkit-calc(100vh - 30px);
+  height: calc(100vh - 30px);
+  width: -webkit-calc(100vh * 1.54 - 30px);
+  width: calc(100vh * 1.54 - 30px);
+  border: 1px solid #000;
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+  margin: 15px 10px;
+  -webkit-flex-shrink: 0;
+      -ms-flex-negative: 0;
+          flex-shrink: 0;
+  position: relative;
+}
 
-		.top ul, .middle ul, .bottom ul
-			list-style none
-			display flex
-			flex-direction row
-			box-sizing border-box
+.wrapper .game-place .top ul,
+.wrapper .game-place .middle ul,
+.wrapper .game-place .bottom ul {
+	padding: 0;
+  list-style: none;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+  -webkit-flex-direction: row;
+      -ms-flex-direction: row;
+          flex-direction: row;
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+}
 
-		.top li, .middle li, .bottom li
-			border: 1px solid grey
-			box-sizing: border-box
+.wrapper .game-place .top li,
+.wrapper .game-place .middle li,
+.wrapper .game-place .bottom li {
+  border: 1px solid #808080;
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+}
 
-		.top li, .bottom li
-			width: calc(70% / 11)
+.wrapper .game-place .top li,
+.wrapper .game-place .bottom li {
+  width: -webkit-calc(70% / 11);
+  width: calc(70% / 11);
+}
 
-			&.square
-				width: 15%
-				&>div
-					position: relative
-					width: 100%
-					padding-bottom: 100%
-					&>div
-						width: 100%
-						height: 100%
-						position: absolute
-						display: flex
-						justify-content: center
-						align-items: center
+.wrapper .game-place .top li.square,
+.wrapper .game-place .bottom li.square {
+  width: 15%;
+}
 
-		.middle
-			height: 53%
-			
-			.container
-				display: flex
-				flex-direction: row
-				height: 100%
+.wrapper .game-place .top li.square>div,
+.wrapper .game-place .bottom li.square>div {
+  position: relative;
+  width: 100%;
+  padding-bottom: 100%;
+}
 
-				.left, .right
-					width: 15%
-					display: block
-					border: none
-					&>ul
-						display: flex
-						flex-direction: column
-						height: 100%
-						&>li.item
-							height: 19%
-						&>li.center
-							height: 24%
-							width: 100%
-					
-				.center
-					width: 70%
-					display: flex
-					flex-direction: row
-					
-					.monitor
-						width: 70%
-						border-right: 2px solid grey
-						display: flex
-						flex-direction: column
-						justify-content: center
-						align-items: center
+.wrapper .game-place .top li.square>div>div,
+.wrapper .game-place .bottom li.square>div>div {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+  -webkit-justify-content: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-align: center;
+  -webkit-align-items: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
 
-						i 
-							margin: 10px
-							font-size: 12px
-						hr
-							margin: 10px 0
+.wrapper .game-place .middle {
+  height: 53%;
+}
 
-						.names input
-							border 1px solid black
-							margin: 5px 0
+.wrapper .game-place .middle .container {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+  -webkit-flex-direction: row;
+      -ms-flex-direction: row;
+          flex-direction: row;
+  height: 100%;
+}
 
-							&.error
-								outline: 1px solid #c40f13
+.wrapper .game-place .middle .container .left,
+.wrapper .game-place .middle .container .right {
+  width: 15%;
+  display: block;
+  border: none;
+}
 
-						.playerProgress
-							.timeOut
-								font-size: 50px
-								display none
-								text-align center
-							.run, .buy, .next
-								display none
-								margin-top 20px
+.wrapper .game-place .middle .container .left>ul,
+.wrapper .game-place .middle .container .right>ul {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+  -webkit-flex-direction: column;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  height: 100%;
+}
 
+.wrapper .game-place .middle .container .left>ul>li.item,
+.wrapper .game-place .middle .container .right>ul>li.item {
+  height: 19%;
+}
 
-						
+.wrapper .game-place .middle .container .left>ul>li.center,
+.wrapper .game-place .middle .container .right>ul>li.center {
+  height: 24%;
+  width: 100%;
+}
 
-					.chat
-						width: 30%
-						padding: 5px
-						overflow: auto
+.wrapper .game-place .middle .container .center {
+  width: 70%;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+  -webkit-flex-direction: row;
+      -ms-flex-direction: row;
+          flex-direction: row;
+}
 
-						p.info
-							font-size: 12px
-							color: grey
+.wrapper .game-place .middle .container .center .monitor {
+  width: 70%;
+  border-right: 2px solid #808080;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+  -webkit-flex-direction: column;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  -webkit-box-pack: center;
+  -webkit-justify-content: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-align: center;
+  -webkit-align-items: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
 
-						p.trade
-							font-size: 12px
-							color: #009688
+.start-message {
+	position: fixed;
+	top: 0;
+	right: 0;
+	left: 0;
+	bottom: 0;
+	z-index: 100;
+	background: rgba(0,0,0,0.7);
+	padding: 20px;
+	display: flex;
+}
 
-						p.exit
-							font-size: 12px
-							color: red
+.boxx {
+	width: 50%;
+	height: 80%;
+	overflow-y: scroll;
+	margin: auto;
+	background: white;
+	padding: 20px;
+}
 
-		.checks
-			.check
-				height: 20px
-				width: 20px
-				border-radius: 50%
-				position: absolute
-				text-align: center
-				display: none
-				&.user1
-					background-color: #ff7575
-					top: 30px
-					left: 10px
-				&.user2
-					background-color: #7dff7d
-					top: 30px
-					left: 35px
-				&.user3
-					background-color: #6666ff
-					top: 30px
-					left: 60px
-				&.user4
-					background-color: #ffff80
-					top: 30px
-					left: 85px
-				&.user5
-					background-color: #82ffff
-					top: 30px
-					left: 110px
+.wrapper .game-place .middle .container .center .monitor i {
+  margin: 10px;
+  font-size: 12px;
+}
 
-	.users
-		height: calc(100vh - 30px)
-		width: calc(100vh * 0.4 - 30px)
-		border: 1px solid black
-		box-sizing: border-box
-		margin: 15px 10px
-		flex-shrink: 0
+.wrapper .game-place .middle .container .center .monitor hr {
+  margin: 10px 0;
+}
 
-		ul
-			list-style: none
-			display: flex
-			flex-direction: column
-			height: 100%
+.wrapper .game-place .middle .container .center .monitor .names .input {
+  border: 1px solid #000;
+  margin: 5px 0;
+}
 
-			li
-				border: 1px solid grey
-				height: 20%
-				box-sizing: border-box
-				display: flex
-				flex-direction: column
-				justify-content: center
-				align-items: center
+.wrapper .game-place .middle .container .center .monitor .names input.error {
+  outline: 1px solid #c40f13;
+}
 
-				&.user1
-					background-color: #ff7575
-				&.user2
-					background-color: #7dff7d
-				&.user3
-					background-color: #6666ff
-				&.user4
-					background-color: #ffff80
-				&.user5
-					background-color: #82ffff
-				&.no-active
-					background-color: #c0c0c0
+.wrapper .game-place .middle .container .center .monitor .playerProgress .timeOut {
+  font-size: 50px;
+  display: none;
+  text-align: center;
+}
 
-				p.name
-					font-weight: 700
-					font-size: 20px
-					margin-bottom: 10px
+.wrapper .game-place .middle .container .center .monitor .playerProgress .run,
+.wrapper .game-place .middle .container .center .monitor .playerProgress .buy,
+.wrapper .game-place .middle .container .center .monitor .playerProgress .next {
+  display: none;
+  margin-top: 20px;
+}
 
+.wrapper .game-place .middle .container .center .chat {
+  width: 30%;
+  padding: 5px;
+  overflow: auto;
+}
 
-li.item
-	display: flex
-	justify-content: center
-	align-items: center
-	font-size: 45px
-	color: grey
-	font-weight: 700
-	background-color: #d4d4d4
+.wrapper .game-place .middle .container .center .chat p {
+	margin: 0 !important;
+}
 
-li.item.square
-	font-size: 20px
-	font-weight: normal
-	background-color: white
+.wrapper .game-place .middle .container .center .chat p.infos {
+  font-size: 12px;
+  color: #808080;
+}
 
+.wrapper .game-place .middle .container .center .chat p.trade {
+  font-size: 12px;
+  color: #009688;
+}
+
+.wrapper .game-place .middle .container .center .chat p.exit {
+  font-size: 12px;
+  color: #f00;
+}
+
+.wrapper .game-place .checks .check {
+  height: 20px;
+  width: 20px;
+  -webkit-border-radius: 50%;
+          border-radius: 50%;
+  position: absolute;
+  text-align: center;
+  display: none;
+}
+
+.wrapper .game-place .checks .check.user1 {
+  background-color: #ff7575;
+  top: 30px;
+  left: 10px;
+}
+
+.wrapper .game-place .checks .check.user2 {
+  background-color: #7dff7d;
+  top: 30px;
+  left: 35px;
+}
+
+.wrapper .game-place .checks .check.user3 {
+  background-color: #66f;
+  top: 30px;
+  left: 60px;
+}
+
+.wrapper .game-place .checks .check.user4 {
+  background-color: #ffff80;
+  top: 30px;
+  left: 85px;
+}
+
+.wrapper .game-place .checks .check.user5 {
+  background-color: #82ffff;
+  top: 30px;
+  left: 110px;
+}
+
+.wrapper .users {
+  height: -webkit-calc(100vh - 30px);
+  height: calc(100vh - 30px);
+  width: -webkit-calc(100vh * 0.4 - 30px);
+  width: calc(100vh * 0.4 - 30px);
+  border: 1px solid #000;
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+  margin: 15px 10px;
+  -webkit-flex-shrink: 0;
+      -ms-flex-negative: 0;
+          flex-shrink: 0;
+}
+
+.wrapper .users ul {
+  list-style: none;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+  -webkit-flex-direction: column;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  height: 100%;
+}
+
+.wrapper .users ul li {
+  border: 1px solid #808080;
+  height: 20%;
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+  -webkit-flex-direction: column;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  -webkit-box-pack: center;
+  -webkit-justify-content: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-align: center;
+  -webkit-align-items: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+
+.wrapper .users ul li.user1 {
+  background-color: #ff7575;
+}
+
+.wrapper .users ul li.user2 {
+  background-color: #7dff7d;
+}
+
+.wrapper .users ul li.user3 {
+  background-color: #66f;
+}
+
+.wrapper .users ul li.user4 {
+  background-color: #ffff80;
+}
+
+.wrapper .users ul li.user5 {
+  background-color: #82ffff;
+}
+
+.wrapper .users ul li.no-active {
+  background-color: #c0c0c0;
+}
+
+.wrapper .users ul li p.name {
+  font-weight: 700;
+  font-size: 20px;
+  margin-bottom: 10px;
+}
+
+li.item {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+  -webkit-justify-content: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-align: center;
+  -webkit-align-items: center;
+      -ms-flex-align: center;
+          align-items: center;
+  font-size: 45px;
+  color: #808080;
+  font-weight: 700;
+  background-color: #d4d4d4;
+}
+
+li.item.square {
+  font-size: 20px;
+  font-weight: normal;
+  background-color: #fff;
+}
 </style>
