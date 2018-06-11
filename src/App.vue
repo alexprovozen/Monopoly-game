@@ -173,6 +173,7 @@ export default {
 			this.setOrder();
 			this.startGame(this.player);
 		},
+
 		sendChat(message, type) {
 			let p = document.createElement('p');
 			p.className = type;
@@ -180,11 +181,13 @@ export default {
 			let chat = this.$refs.chat;
 			chat.appendChild(p);
 		},
+
 		getRandomNumbers() {
 			let number1 = Math.round(1 - 0.5 + Math.random() * (6 - 1 + 1));
 			let number2 = Math.round(1 - 0.5 + Math.random() * (6 - 1 + 1));
 			return [number1, number2]
 		},
+
 		setOrder() {
 		//генерируем случайние числа
 			for (let i=0; i<this.players.length;i++) {
@@ -217,6 +220,7 @@ export default {
 				this.sendChat(`${order[i]} ходит<b> ${this.players[i].name}</b>`, 'trade');
 			}
 		},
+
 		timer(seconds) {
 			let blockTimer = this.$refs.timer;
 			blockTimer.style.display = 'block';
@@ -228,10 +232,12 @@ export default {
 							}
 			}, 1000)
 		},
+
 		clearTimer() {
 			clearInterval(interval);
 			clearTimeout(timeOut);
 		},
+
 		startGame(player) {
 			this.sendChat('Ход игрока <b>' + this.players[player].name + '</b>', 'info');
 			this.timer(20);
@@ -243,22 +249,28 @@ export default {
 				this.startGame(next)
 			},21000)
 		},
-		playerRun(player) {
+
+		playerRun(i) {
+		  let player = this.players[i]
 			let random = this.getRandomNumbers();
-			let sumPoints = random.number1 + random.number2 + this.counter;
+			let sumPoints = random[0] + random[1] + player.counter;
+      this.sendChat(`Игрок <b>${player.name}</b> выбрасывает ${random[0]} и ${random[1]}`, 'info');
 			if (sumPoints>35) {
-				this.players[player].counter = sumPoints - 36;
+        player.counter = sumPoints - 36;
 				//Проход круга +200000$
-				this.players[player].money += 200000;
+        player.money += 200000;
+        this.sendChat(`Игрок <b>${player.name}</b> проходит круг и получает $200 000`, 'info');
 			} else {
-				this.players[player].counter = sumPoints;
+        player.counter = sumPoints;
 			}
+      this.sendChat(`Игрок <b>${player.name}</b> перемещается на клетку ${player.counter}`, 'info');
 		},
+
 		playerProgress() {
 			this.clearTimer();
 			this.$refs.run.style.display = 'none';
 			this.playerRun(this.player);
-			console.log(this.players[this.player].counter)
+			
 		}
 	}
 }
