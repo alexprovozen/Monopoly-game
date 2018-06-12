@@ -97,6 +97,7 @@
 								<v-btn color="warning" 
 												class="buy"
 												ref="buy"
+												@click="buy"
 												>Купить</v-btn>
 								<button class="next">Следующий</button>
 							</div>
@@ -167,7 +168,8 @@ export default {
 			players: [],
 			player: 0,
 			options: [2,3,4,5],
-			valid: true
+			valid: true,
+			cells: this.$store.getters.cells
     }
 	},
 	methods: {
@@ -259,10 +261,6 @@ export default {
 				this.$refs.run.$el.style.display = 'block';
 				this.sendChat('Ход игрока <b>' + this.players[player].name + '</b>', 'infos');
 				this.$refs.buy.$el.style.display = 'none';
-			} else {
-				this.$refs.buy.$el.style.display = 'block';
-				this.sendChat('Купить компанию <b>' + this.players[player].name + '</b>', 'infos');
-
 			}
 			this.timer(10);
 			let next = player + 1;
@@ -294,8 +292,25 @@ export default {
         player.counter = sumPoints;
 			}
 			this.sendChat(`Игрок <b>${player.name}</b> перемещается на клетку ${player.counter}`, 'infos');
-			
-			this.startGame(this.player, false);
+			let cell = this.cells[player.counter];
+			if (cell.type === 'company') {
+				this.companyCell(i, cell);
+			}
+		},
+
+		companyCell(player, cell) {
+			if (!cell.owner) {
+				this.$refs.buy.$el.removeAttribute('data-' + player);
+				this.$refs.buy.$el.removeAttribute('data-' + cell.name);
+				this.startGame(player, false);
+				this.sendChat(`Купить компанию <b>${cell.name}</b> стоимостью <b>$${cell.cost}?</b>`, 'infos');
+				this.$refs.buy.$el.style.display = 'block';
+				this.$refs.buy.$el.setAttribute('data-' + player, player)
+			}
+		},
+
+		buy (player) {
+
 		},
 
 		playerProgress() {
@@ -309,13 +324,10 @@ export default {
 			let counter = this.players[player].counter;
 			function movesCheck(direction, value) {
 				check.style[direction] = (parseFloat(check.style[direction] || getComputedStyle(check)[direction]) + value) + 'px';
-				return check.style[direction]
 			}
-			console.log("------- " + player)
 			for (let i=0; i<points; i++) {
-				console.log(counter)
 				if (counter === 0 || counter === 11) {
-					console.log(movesCheck('left', 103.67));
+					movesCheck('left', 103.67);
 				} else if (counter === 14 || counter === 15) {
 					movesCheck('top', 70.07);
 				} else if (counter === 12 || counter === 17) {
@@ -331,7 +343,7 @@ export default {
 						continue
 					}
 				} else if (counter<12) {
-					console.log(movesCheck('left', 61.36));
+					movesCheck('left', 61.36);
 				} else if (counter<18) {
 					movesCheck('top', 61.92);
 				} else if (counter<30) {
@@ -342,7 +354,7 @@ export default {
 				counter++
 			}
 		}
-	}
+	},
 }
 </script>
 
