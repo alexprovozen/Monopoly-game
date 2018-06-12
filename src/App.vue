@@ -40,7 +40,8 @@
               <div :style="{display: 'block'}"
 									v-for="(n, index) of players" 
 									:key="index" 
-									:class="'check user' + (index+1)">{{index+1}}
+									:class="'check user' + (index+1)"
+									>
 							</div>
             </div>
 			<div class="top">
@@ -166,7 +167,7 @@ export default {
 			players: [],
 			player: 0,
 			options: [2,3,4,5],
-			valid: false
+			valid: true
     }
 	},
 	methods: {
@@ -194,6 +195,7 @@ export default {
 			p.innerHTML = message;
 			let chat = this.$refs.chat;
 			chat.appendChild(p);
+			chat.scrollTop = chat.scrollHeight;
 		},
 
 		getRandomNumbers() {
@@ -239,11 +241,11 @@ export default {
 			let blockTimer = this.$refs.timer;
 			blockTimer.style.display = 'block';
 			interval = setInterval( () => {
-							seconds--;
-							blockTimer.innerHTML = seconds;
-							if (seconds === 0) {
-									clearInterval(interval);
-							}
+				seconds--;
+				blockTimer.innerHTML = seconds;
+				if (seconds === 0) {
+						clearInterval(interval);
+				}
 			}, 1000)
 		},
 
@@ -257,34 +259,30 @@ export default {
 				this.$refs.run.$el.style.display = 'block';
 				this.sendChat('Ход игрока <b>' + this.players[player].name + '</b>', 'infos');
 				this.$refs.buy.$el.style.display = 'none';
-
 			} else {
 				this.$refs.buy.$el.style.display = 'block';
 				this.sendChat('Купить компанию <b>' + this.players[player].name + '</b>', 'infos');
-				this.player++
-				if (this.player === this.players.length) {
-					this.player = 0;
-				}
+
 			}
-			this.timer(20);
+			this.timer(10);
 			let next = player + 1;
-			
-			console.log(next)
 			timeOut = setTimeout( () => {
 				if (next === this.players.length) {
 					next = 0;
 				}
+				clearInterval(interval)
 				this.startGame(next, true)
 				this.player++
 				if (this.player === this.players.length) {
 					this.player = 0;
 				}
-			},21000)
+			},11000)
 		},
 
 		playerRun(i) {
 		  let player = this.players[i]
 			let random = this.getRandomNumbers();
+			this.moveCheck(this.player, random[0]+random[1])
 			let sumPoints = random[0] + random[1] + player.counter;
       this.sendChat(`Игрок <b>${player.name}</b> выбрасывает ${random[0]} и ${random[1]}`, 'infos');
 			if (sumPoints>35) {
@@ -296,6 +294,7 @@ export default {
         player.counter = sumPoints;
 			}
 			this.sendChat(`Игрок <b>${player.name}</b> перемещается на клетку ${player.counter}`, 'infos');
+			
 			this.startGame(this.player, false);
 		},
 
@@ -303,6 +302,45 @@ export default {
 			this.clearTimer();
 			this.$refs.run.$el.style.display = 'none';
 			this.playerRun(this.player);
+		},
+		moveCheck(player, points) {
+			let checks = document.querySelectorAll('.check')
+			let check = checks[player];
+			let counter = this.players[player].counter;
+			function movesCheck(direction, value) {
+				check.style[direction] = (parseFloat(check.style[direction] || getComputedStyle(check)[direction]) + value) + 'px';
+				return check.style[direction]
+			}
+			console.log("------- " + player)
+			for (let i=0; i<points; i++) {
+				console.log(counter)
+				if (counter === 0 || counter === 11) {
+					console.log(movesCheck('left', 103.67));
+				} else if (counter === 14 || counter === 15) {
+					movesCheck('top', 70.07);
+				} else if (counter === 12 || counter === 17) {
+					movesCheck('top', 103.95);
+				} else if (counter === 18 || counter === 29) {
+					movesCheck('left', -103.67);
+				} else if (counter === 32 || counter === 33) {
+					movesCheck('top', -70.07);
+				} else if (counter === 30 || counter === 35) {
+					movesCheck('top', -103.95);
+					if (counter === 35) {
+						counter=0;
+						continue
+					}
+				} else if (counter<12) {
+					console.log(movesCheck('left', 61.36));
+				} else if (counter<18) {
+					movesCheck('top', 61.92);
+				} else if (counter<30) {
+					movesCheck('left', -61.36);
+				} else if (counter<36) {
+					movesCheck('top', -61.92);
+				}
+				counter++
+			}
 		}
 	}
 }
@@ -562,8 +600,6 @@ export default {
 .wrapper .game-place .checks .check {
   height: 20px;
   width: 20px;
-  -webkit-border-radius: 50%;
-          border-radius: 50%;
   position: absolute;
   text-align: center;
   display: none;
@@ -571,32 +607,37 @@ export default {
 
 .wrapper .game-place .checks .check.user1 {
   background-color: #ff7575;
-  top: 30px;
-  left: 10px;
+  top: 41.33px;
+  left: 41.33px;
+	z-index: 2;
 }
 
 .wrapper .game-place .checks .check.user2 {
   background-color: #7dff7d;
-  top: 30px;
-  left: 35px;
+  top: 41.33px;
+  left: 81.33px;
+	z-index: 2;
 }
 
 .wrapper .game-place .checks .check.user3 {
   background-color: #66f;
-  top: 30px;
-  left: 60px;
+  top: 61.33px;
+  left: 61.33px;
+	z-index: 2;
 }
 
 .wrapper .game-place .checks .check.user4 {
   background-color: #ffff80;
-  top: 30px;
-  left: 85px;
+  top: 81.33px;
+  left: 41.33px;
+	z-index: 2;
 }
 
 .wrapper .game-place .checks .check.user5 {
   background-color: #82ffff;
-  top: 30px;
-  left: 110px;
+  top: 81.33px;
+  left: 81.33px;
+	z-index: 2;
 }
 
 .wrapper .users {
